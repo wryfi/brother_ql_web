@@ -116,7 +116,7 @@
         <label for="previewImg">Label Preview:</label><br />
         <img id="previewImg" style="border: 1px solid #444; max-height: 350px; width: auto; max-width: 100%; margin-bottom: 10px;"/>
         <p>Printed size w/o margins: <span id="labelWidth">?</span> cm x <span id="labelHeight">?</span> cm</p>
-        <button id="printButton" type="button" class="btn btn-primary btn-block btn-lg" onClick="print()">
+        <button id="printButton" type="button" class="btn btn-primary btn-block btn-lg" onClick="printLabel()">
           <span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print
         </button>
       </fieldset>
@@ -185,7 +185,7 @@ function setStatus(data) {
   $('#printButton').prop('disabled', false);
 }
 
-function print() {
+function printLabel() {
   $('#printButton').prop('disabled', true);
   $('#statusPanel').html('<div id="statusBox" class="alert alert-info" role="alert"><i class="glyphicon glyphicon-hourglass"></i><span>Processing print request...</span></div>');
   $.ajax({
