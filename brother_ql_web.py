@@ -10,6 +10,8 @@ from io import BytesIO
 
 from bottle import run, route, get, post, response, request, jinja2_view as view, static_file, redirect
 from PIL import Image, ImageDraw, ImageFont
+from pilmoji import Pilmoji
+from pilmoji.source import EmojidexEmojiSource, OpenmojiEmojiSource
 
 from brother_ql.devicedependent import models, label_type_specs, label_sizes
 from brother_ql.devicedependent import ENDLESS_LABEL, DIE_CUT_LABEL, ROUND_DIE_CUT_LABEL
@@ -126,7 +128,7 @@ def create_label_im(text, **kwargs):
         if label_type in (ENDLESS_LABEL,):
             width = textsize[0] + kwargs['margin_left'] + kwargs['margin_right']
     im = Image.new('RGB', (width, height), 'white')
-    draw = ImageDraw.Draw(im)
+    # draw = ImageDraw.Draw(im)
     if kwargs['orientation'] == 'standard':
         if label_type in (DIE_CUT_LABEL, ROUND_DIE_CUT_LABEL):
             vertical_offset  = (height - textsize[1])//2
@@ -142,7 +144,9 @@ def create_label_im(text, **kwargs):
         else:
             horizontal_offset = kwargs['margin_left']
     offset = horizontal_offset, vertical_offset
-    draw.multiline_text(offset, text, kwargs['fill_color'], font=im_font, align=kwargs['align'])
+    with Pilmoji(im, source=OpenmojiEmojiSource) as pilmoji:
+        pilmoji.text(offset, text, kwargs['fill_color'], font=im_font, align=kwargs['align'], emoji_scale_factor=1.3, emoji_position_offset=(0, -5))
+    im = im.convert("L")
     return im
 
 @get('/api/preview/text')
